@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -24,7 +25,7 @@ font = pygame.font.SysFont(None, 36)
 lives = 3
 
 # High score setup
-high_score_file = "../highscore.txt"
+high_score_file = os.path.join(os.path.dirname(__file__), "highscore.txt")
 
 # Load existing high score
 try:
@@ -72,11 +73,6 @@ while running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            # Save high score if beaten
-            if score > high_score:
-                with open(high_score_file, "w") as f:
-                    f.write(str(score))
-
             running = False
 
     # Move paddle
@@ -151,4 +147,13 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
+
+# Save high score if beaten
+if score > high_score:
+    try:
+        with open(high_score_file, "w") as f:
+            f.write(str(score))
+    except Exception as e:
+        print("Failed to save high score:", e)
+
 sys.exit()
