@@ -16,6 +16,10 @@ BLUE = (0, 100, 255)
 RED = (255, 0, 0)
 BRICK_COLORS = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 128, 0), (0, 0, 255)]
 
+# Score setup
+score = 0
+font = pygame.font.SysFont(None, 36)
+
 # Paddle settings
 paddle = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 30, 120, 15)
 paddle_speed = 8
@@ -81,6 +85,7 @@ while running:
         if ball.colliderect(brick):
             ball_speed[1] *= -1
             del bricks[i]
+            score += 100
             break
 
     # Draw everything
@@ -94,6 +99,9 @@ while running:
     for brick, color in bricks:
         pygame.draw.rect(screen, color, brick)
 
+    score_text = font.render(f"Score: {score}", True, WHITE)
+    screen.blit(score_text, (10, 10))
+    
     pygame.display.flip()
 
 pygame.quit()
