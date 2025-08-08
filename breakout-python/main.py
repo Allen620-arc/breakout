@@ -20,6 +20,14 @@ BRICK_COLORS = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 128, 0), (0, 0, 2
 score = 0
 font = pygame.font.SysFont(None, 36)
 
+# Lives setup
+lives = 3
+
+def reset_ball_and_paddle():
+    global ball, paddle
+    ball.x, ball.y = WIDTH // 2, HEIGHT // 2
+    paddle.x = WIDTH // 2 - paddle.width // 2
+
 # Paddle settings
 paddle = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 30, 120, 15)
 paddle_speed = 8
@@ -73,8 +81,13 @@ while running:
     if ball.top <= 0:
         ball_speed[1] *= -1
     if ball.bottom >= HEIGHT:
-        print("Game Over!")
-        running = False
+        lives -= 1
+        if lives <= 0:
+            print("Game Over!")
+            running = False
+        else:
+            reset_ball_and_paddle()
+            pygame.time.delay(1000)  # brief pause before resuming
 
     # Ball collision with paddle
     if ball.colliderect(paddle):
@@ -99,8 +112,13 @@ while running:
     for brick, color in bricks:
         pygame.draw.rect(screen, color, brick)
 
+    # Draw score
     score_text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(score_text, (10, 10))
+
+    # Draw lives
+    lives_text = font.render(f"Lives: {lives}", True, WHITE)
+    screen.blit(lives_text, (WIDTH - 120, 10))
     
     pygame.display.flip()
 
