@@ -2,6 +2,7 @@ import pygame
 import sys
 import json
 import os
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -112,8 +113,10 @@ def create_bricks():
 def main():
     player_name = get_player_name()
     leaderboard = load_leaderboard()
+
     score = 0
     lives = 3
+    final_score = 0
 
     paddle = pygame.Rect(WIDTH // 2 - 60, HEIGHT - 30, 120, 15)
     paddle_speed = 8
@@ -127,6 +130,9 @@ def main():
     bricks = create_bricks()
     clock = pygame.time.Clock()
     running = True
+
+    # Timer
+    start_time = time.time()
 
     while running:
         clock.tick(60)
@@ -153,7 +159,8 @@ def main():
         if ball.bottom >= HEIGHT:
             lives -= 1
             if lives <= 0:
-                running = False
+                final_score = score * lives  # 0 if lost
+                break
             else:
                 reset_ball_and_paddle()
                 pygame.time.delay(1000)
@@ -186,11 +193,25 @@ def main():
         screen.blit(font.render(f"Score: {score}", True, WHITE), (10, 10))
         screen.blit(font.render(f"Lives: {lives}", True, WHITE), (WIDTH - 120, 10))
 
+        elapsed_now = round(time.time() - start_time, 2)
+        timer_text = font.render(f"Time: {elapsed_now}s", True, WHITE)
+        screen.blit(timer_text, (WIDTH // 2 - 50, 10))
+
         pygame.display.flip()
 
+    # Finalize score after game ends
+    elapsed_time = round(time.time() - start_time, 2)
+    if final_score == 0:
+        final_score = score * lives  # Can still be 0 if no bricks hit
+
     # Save score
-    leaderboard.append({"name": player_name, "score": score})
-    leaderboard.sort(key=lambda x: x["score"], reverse=True)
+    leaderboard.append({
+        "name": player_name,
+        "time": elapsed_time,
+        "score": final_score
+    })
+    
+    leaderboard.sort(key=lambda x: (x["time"], -x["score"]))
     leaderboard = leaderboard[:10]
     save_leaderboard(leaderboard)
     show_leaderboard_screen(leaderboard)
