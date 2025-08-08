@@ -101,6 +101,15 @@ while running:
             score += 100
             break
 
+    # Check win condition
+    if not bricks:
+        print("You Win!")
+        win_text = font.render("You Win!", True, WHITE)
+        screen.blit(win_text, (WIDTH // 2 - 70, HEIGHT // 2))
+        pygame.display.flip()
+        pygame.time.delay(3000)  # Pause for 3 seconds
+        running = False
+    
     # Draw everything
     screen.fill(BLACK)
 
