@@ -23,6 +23,16 @@ font = pygame.font.SysFont(None, 36)
 # Lives setup
 lives = 3
 
+# High score setup
+high_score_file = "../highscore.txt"
+
+# Load existing high score
+try:
+    with open(high_score_file, "r") as f:
+        high_score = int(f.read())
+except:
+    high_score = 0
+
 def reset_ball_and_paddle():
     global ball, paddle
     ball.x, ball.y = WIDTH // 2, HEIGHT // 2
@@ -62,6 +72,11 @@ while running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            # Save high score if beaten
+            if score > high_score:
+                with open(high_score_file, "w") as f:
+                    f.write(str(score))
+
             running = False
 
     # Move paddle
@@ -124,6 +139,10 @@ while running:
     # Draw score
     score_text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(score_text, (10, 10))
+
+    # Draw high score
+    high_score_text = font.render(f"High Score: {high_score}", True, WHITE)
+    screen.blit(high_score_text, (WIDTH // 2 - 80, 10))
 
     # Draw lives
     lives_text = font.render(f"Lives: {lives}", True, WHITE)
