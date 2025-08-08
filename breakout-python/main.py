@@ -177,7 +177,11 @@ def main():
 
         if not bricks:
             win_text = font.render("You Win!", True, WHITE)
-            screen.blit(win_text, (WIDTH // 2 - 70, HEIGHT // 2))
+            elapsed_now = round(time.time() - start_time, 2)
+            timer_text = font.render(f"Time: {elapsed_now}s", True, WHITE)
+            screen.fill(BLACK)
+            screen.blit(win_text, (WIDTH // 2 - 70, HEIGHT // 2 - 20))
+            screen.blit(timer_text, (WIDTH // 2 - 70, HEIGHT // 2 + 20))
             pygame.display.flip()
             pygame.time.delay(3000)
             running = False
